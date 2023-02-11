@@ -2,7 +2,6 @@
 const User = require('../models/userModel');
 
 // libraries
-// const bcrypt = require('bcrypt');
 var bcrypt = require('bcryptjs');
 
 // controller
@@ -75,3 +74,45 @@ module.exports.register = (req, res) => {
     });
 };
 
+module.exports.login = (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+
+  User.findOne({ email: email })
+    .then((foundUser) => {
+      if (foundUser == null) {
+        res.send({
+          message: 'User Not Found!',
+        });
+      } else {
+        const isPasswordCorrect = bcrypt.compareSync(
+          password,
+          foundUser.password
+        );
+        if (isPasswordCorrect) {
+          //user is authenticated
+          res.send({
+            accessToken: auth.createAccessToken(foundUser),
+          });
+        } else {
+          res.send({
+            message: 'Incorrect password!',
+          });
+        }
+      }
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
+module.exports.getUserDetails = (req, res) => {
+  let userId = req.user.id;
+  User.findById(userId)
+    .then((foundUser) => {
+      res.send(foundUser);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
