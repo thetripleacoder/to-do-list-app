@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', userRoutes);
+app.use('/api', taskRoutes);
 
 app.listen(port, () => console.log(`Server is listening to port ${port}`));
 
